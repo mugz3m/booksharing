@@ -1,0 +1,187 @@
+openapi: "3.0.3"
+info:
+  title: "Swagger Booksharing web-service - OpenAPI 3.0"
+  description: "This is documentation for booksharing web-service"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080/"
+tags:
+  - name: users
+    description: Everything about users
+  - name: books
+    description: Everything about books
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      summary: "Create new user"
+      operationId: "createUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequestBody"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: "Invalid request body."
+    get:
+      tags:
+        - users
+      summary: "Get users by username and password"
+      operationId: "getByUsernameAndPassword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetUserByCredentialsRequestBody"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /books:
+    post:
+      tags:
+        - books
+      summary: "Create new book"
+      operationId: "createBook"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookRequestBody"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: " Invalid request body"
+    get:
+      tags:
+        - books
+      summary: "Get all books"
+      operationId: "getBooks"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Book"
+  /books/{id}:
+    delete:
+      tags:
+        - books
+      summary: "Delete book by id"
+      operationId: "deleteBook"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteBookRequestBody"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+        "400":
+          description: "Invalid book id"
+
+components:
+  schemas:
+    CreateUserRequestBody:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+        role:
+          type: "string"
+          enum:
+            - "ADMIN"
+            - "USER"
+    GetUserByCredentialsRequestBody:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    CreateBookRequestBody:
+      type: "object"
+      properties:
+        title:
+          type: "string"
+        author:
+          type: "string"
+        year:
+          type: "integer"
+          format: "int32"
+        genre:
+          type: "string"
+        userId:
+          type: "integer"
+          format: "int32"
+    User:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        username:
+          type: "string"
+        password:
+          type: "string"
+        role:
+          type: "string"
+          enum:
+            - "ADMIN"
+            - "USER"
+    Book:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        title:
+          type: "string"
+        author:
+          type: "string"
+        year:
+          type: "integer"
+          format: "int32"
+        genre:
+          type: "string"
+        user:
+          $ref: "#/components/schemas/User"
+    DeleteBookRequestBody:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int32"
