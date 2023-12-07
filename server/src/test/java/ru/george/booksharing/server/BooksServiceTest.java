@@ -6,16 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.george.booksharing.server.controller.dto.CreateBookRequestBody;
-import ru.george.booksharing.server.controller.dto.DtoUtils;
-import ru.george.booksharing.server.controller.dto.GetBookResponse;
 import ru.george.booksharing.server.model.Book;
 import ru.george.booksharing.server.model.User;
 import ru.george.booksharing.server.model.UserRole;
 import ru.george.booksharing.server.repository.BookRepository;
 import ru.george.booksharing.server.repository.UserRepository;
 import ru.george.booksharing.server.service.BooksService;
-
-import java.util.List;
 
 @SpringBootTest
 public class BooksServiceTest {
@@ -56,14 +52,6 @@ public class BooksServiceTest {
         Assertions.assertEquals(book.getYear(), year);
         Assertions.assertEquals(book.getGenre(), genre);
         Utils.assertUsersByContent(book.getUser(), userMock);
-    }
-
-    @Test
-    public void getBooksTest() {
-        List<GetBookResponse> books = booksService.getBooks();
-        Assertions.assertFalse(books.isEmpty());
-        Assertions.assertEquals(1, books.size());
-        Utils.assertBooksByContent(DtoUtils.bookToGetBookResponse(bookMock), books.get(0));
     }
 
     @Test

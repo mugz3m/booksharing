@@ -5,14 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.george.booksharing.server.controller.dto.CreateBookRequestBody;
-import ru.george.booksharing.server.controller.dto.DtoUtils;
-import ru.george.booksharing.server.controller.dto.GetBookResponse;
 import ru.george.booksharing.server.model.Book;
 import ru.george.booksharing.server.repository.BookRepository;
 import ru.george.booksharing.server.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 @Service
@@ -36,16 +32,6 @@ public class BooksService {
                         userRepository.getReferenceById(requestBody.userId())
                 )
         );
-    }
-
-    public List<GetBookResponse> getBooks() {
-        List<Book> books = bookRepository.findAll();
-        ArrayList<GetBookResponse> response = new ArrayList<>();
-        for (Book book : books) {
-            response.add(DtoUtils.bookToGetBookResponse(book));
-        }
-
-        return response;
     }
 
     public void deleteBook(@NotNull Integer id) throws Throwable {

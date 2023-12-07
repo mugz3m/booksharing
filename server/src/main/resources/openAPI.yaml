@@ -87,20 +87,6 @@ paths:
                 $ref: "#/components/schemas/GetBookResponse"
         "400":
           description: " Invalid request body"
-    get:
-      tags:
-        - books
-      summary: "Get all books"
-      operationId: "getBooks"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/GetBookResponse"
   /books/{id}:
     delete:
       tags:
