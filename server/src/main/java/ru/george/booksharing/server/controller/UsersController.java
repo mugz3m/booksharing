@@ -3,8 +3,11 @@ package ru.george.booksharing.server.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.george.booksharing.server.controller.dto.CreateUserRequestBody;
 import ru.george.booksharing.server.controller.dto.GetUserByCredentialsRequestBody;
+import ru.george.booksharing.server.controller.dto.GetUserResponse;
 import ru.george.booksharing.server.model.User;
 import ru.george.booksharing.server.service.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -15,13 +18,18 @@ public class UsersController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = {"application/json"})
     public User createUser(@RequestBody CreateUserRequestBody requestBody) {
         return userService.createUser(requestBody);
     }
 
     @GetMapping
-    public User getByUsernameAndPassword(@RequestBody GetUserByCredentialsRequestBody requestBody) {
+    public List<GetUserResponse> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @PostMapping(value = "/credentials", consumes = {"application/json"})
+    public User getByCredentials(@RequestBody GetUserByCredentialsRequestBody requestBody) {
         return userService.getByCredentials(requestBody);
     }
 }

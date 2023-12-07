@@ -16,11 +16,13 @@ repositories {
 }
 
 dependencies {
+    runtimeOnly("com.mysql:mysql-connector-j")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains:annotations:24.0.0")
     implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
-    runtimeOnly("com.mysql:mysql-connector-j")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

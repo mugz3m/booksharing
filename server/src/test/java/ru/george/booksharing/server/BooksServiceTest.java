@@ -5,9 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.server.ResponseStatusException;
 import ru.george.booksharing.server.controller.dto.CreateBookRequestBody;
-import ru.george.booksharing.server.controller.dto.DeleteBookRequestBody;
 import ru.george.booksharing.server.controller.dto.DtoUtils;
 import ru.george.booksharing.server.controller.dto.GetBookResponse;
 import ru.george.booksharing.server.model.Book;
@@ -21,8 +19,8 @@ import java.util.List;
 
 @SpringBootTest
 public class BooksServiceTest {
-    private final User userMock = new User(1, "test", "password", UserRole.USER);
-    private final User adminMock = new User(2, "admin", "admin", UserRole.ADMIN);
+    private final User userMock = new User(1, "test", "password", UserRole.USER, null);
+    private final User adminMock = new User(2, "admin", "admin", UserRole.ADMIN, null);
     private final Book bookMock = new Book(1, "Title", "John Doe", 2023, "Fantastic", userMock);
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
@@ -64,24 +62,13 @@ public class BooksServiceTest {
     public void getBooksTest() {
         List<GetBookResponse> books = booksService.getBooks();
         Assertions.assertFalse(books.isEmpty());
-        Assertions.assertEquals(books.size(), 1);
-        Utils.assertBooksByContent(books.get(0), DtoUtils.bookToGetBookResponse(bookMock));
+        Assertions.assertEquals(1, books.size());
+        Utils.assertBooksByContent(DtoUtils.bookToGetBookResponse(bookMock), books.get(0));
     }
 
     @Test
-    public void deleteBookByUser() {
-        DeleteBookRequestBody requestBody = new DeleteBookRequestBody(userMock.getId());
-        Assertions.assertThrows(
-                ResponseStatusException.class,
-                () -> booksService.deleteBook(bookMock.getId(), requestBody),
-                "Only admin can delete books"
-        );
-    }
-
-    @Test
-    public void deleteBookByAdmin() {
-        DeleteBookRequestBody requestBody = new DeleteBookRequestBody(adminMock.getId());
-        Assertions.assertDoesNotThrow(() -> booksService.deleteBook(bookMock.getId(), requestBody));
+    public void deleteBook() {
+        Assertions.assertDoesNotThrow(() -> booksService.deleteBook(bookMock.getId()));
 
         Book removedBook = bookRepository.findById(bookMock.getId()).orElse(null);
         Assertions.assertNull(removedBook);

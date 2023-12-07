@@ -1,7 +1,10 @@
 package ru.george.booksharing.server.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Table(name = "books")
 @Entity
@@ -13,7 +16,9 @@ public class Book {
     private String author;
     private Integer year;
     private String genre;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     protected Book() {
@@ -22,8 +27,8 @@ public class Book {
     public Book(@NotNull Integer id,
                 @NotNull String title,
                 @NotNull String author,
-                Integer year,
-                String genre,
+                @Nullable Integer year,
+                @Nullable String genre,
                 @NotNull User user) {
         this.id = id;
         this.title = title;

@@ -5,12 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.george.booksharing.server.controller.dto.CreateBookRequestBody;
-import ru.george.booksharing.server.controller.dto.DeleteBookRequestBody;
 import ru.george.booksharing.server.controller.dto.DtoUtils;
 import ru.george.booksharing.server.controller.dto.GetBookResponse;
 import ru.george.booksharing.server.model.Book;
-import ru.george.booksharing.server.model.User;
-import ru.george.booksharing.server.model.UserRole;
 import ru.george.booksharing.server.repository.BookRepository;
 import ru.george.booksharing.server.repository.UserRepository;
 
@@ -51,15 +48,10 @@ public class BooksService {
         return response;
     }
 
-    public void deleteBook(@NotNull Integer id, @NotNull DeleteBookRequestBody requestBody) throws Throwable {
+    public void deleteBook(@NotNull Integer id) throws Throwable {
         Book book = bookRepository.findById(id).orElseThrow((Supplier<Throwable>) () ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with id " + id + " not found")
         );
-        User user = userRepository.findById(requestBody.userId()).orElseThrow((Supplier<Throwable>) () ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id " + id + " not found")
-        );
-        if (user.getRole() != UserRole.ADMIN)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin can delete books");
         bookRepository.delete(book);
     }
 }

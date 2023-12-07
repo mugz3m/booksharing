@@ -35,8 +35,23 @@ paths:
     get:
       tags:
         - users
+      summary: "Get all users"
+      operationId: "getAllUsers"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/GetUsersResponse"
+  /users/credentials:
+    post:
+      tags:
+        - users
       summary: "Get users by username and password"
-      operationId: "getByUsernameAndPassword"
+      operationId: "getByCredentials"
       requestBody:
         content:
           application/json:
@@ -69,7 +84,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Book"
+                $ref: "#/components/schemas/GetBookResponse"
         "400":
           description: " Invalid request body"
     get:
@@ -85,7 +100,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Book"
+                  $ref: "#/components/schemas/GetBookResponse"
   /books/{id}:
     delete:
       tags:
@@ -162,7 +177,7 @@ components:
           enum:
             - "ADMIN"
             - "USER"
-    Book:
+    GetBookResponse:
       type: "object"
       properties:
         id:
@@ -177,8 +192,26 @@ components:
           format: "int32"
         genre:
           type: "string"
-        user:
-          $ref: "#/components/schemas/User"
+        userId:
+          type: "integer"
+          format: "int32"
+    GetUsersResponse:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        username:
+          type: "string"
+        role:
+          type: "string"
+          enum:
+            - "ADMIN"
+            - "USER"
+        books:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/GetBookResponse"
     DeleteBookRequestBody:
       type: "object"
       properties:

@@ -7,16 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 import ru.george.booksharing.server.controller.dto.CreateUserRequestBody;
+import ru.george.booksharing.server.controller.dto.DtoUtils;
 import ru.george.booksharing.server.controller.dto.GetUserByCredentialsRequestBody;
+import ru.george.booksharing.server.controller.dto.GetUserResponse;
+import ru.george.booksharing.server.model.Book;
 import ru.george.booksharing.server.model.User;
 import ru.george.booksharing.server.model.UserRole;
 import ru.george.booksharing.server.repository.BookRepository;
 import ru.george.booksharing.server.repository.UserRepository;
 import ru.george.booksharing.server.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 public class UsersServiceTest {
-    private final User userMock = new User(1, "test", "password", UserRole.USER);
+    private final User userMock = new User(1, "test", "password", UserRole.USER, null);
+    private final Book bookMock = new Book(1, "Title", "John Doe", 2023, "Fantastic", userMock);
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final UserService userService;
@@ -25,7 +32,7 @@ public class UsersServiceTest {
     public UsersServiceTest(BookRepository bookRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        userService = new UserService(userRepository);
+        userService = new UserService(bookRepository, userRepository);
     }
 
     @BeforeEach
@@ -60,6 +67,17 @@ public class UsersServiceTest {
                 () -> userService.createUser(requestBody),
                 "User with this username already exist"
         );
+    }
+
+    @Test
+    public void getAllUsersTest() {
+        List<Book> books = new ArrayList<>();
+        books.add(bookMock);
+        GetUserResponse mock = DtoUtils.userToGetUserResponse(userMock, books);
+        List<GetUserResponse> users = userService.getAllUsers();
+
+        Assertions.assertEquals(1, users.size());
+        Utils.assertGetUsersResponseByContent(mock, users.get(0));
     }
 
     @Test
